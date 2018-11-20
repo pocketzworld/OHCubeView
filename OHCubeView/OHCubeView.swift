@@ -9,7 +9,7 @@
 import UIKit
 
 @available(iOS 9.0, *)
-@objc protocol OHCubeViewDelegate: class {
+@objc public protocol OHCubeViewDelegate: class {
 
     @objc optional func cubeViewDidScroll(_ cubeView: OHCubeView)
 }
@@ -17,7 +17,7 @@ import UIKit
 @available(iOS 9.0, *)
 open class OHCubeView: UIScrollView, UIScrollViewDelegate {
 
-    weak var cubeDelegate: OHCubeViewDelegate?
+    open weak var cubeDelegate: OHCubeViewDelegate?
 
     fileprivate let maxAngle: CGFloat = 60.0
 
@@ -39,30 +39,6 @@ open class OHCubeView: UIScrollView, UIScrollViewDelegate {
 
     open override func layoutSubviews() {
         super.layoutSubviews()
-    }
-
-    open func addNextView(_ view: UIView) {
-        if childViews.count == 2 {
-            stackView.removeArrangedSubview(childViews[1])
-            childViews.remove(at: 1)
-        }
-
-        view.layer.masksToBounds = true
-        stackView.addArrangedSubview(view)
-
-        scrollToViewAtIndex(1, animated: false)
-
-        addConstraint(NSLayoutConstraint(
-            item: view,
-            attribute: NSLayoutAttribute.width,
-            relatedBy: NSLayoutRelation.equal,
-            toItem: self,
-            attribute: NSLayoutAttribute.width,
-            multiplier: 1,
-            constant: 0)
-        )
-
-        childViews.append(view)
     }
 
     open func addChildViews(_ views: [UIView]) {
@@ -123,6 +99,30 @@ open class OHCubeView: UIScrollView, UIScrollViewDelegate {
     open func scrollViewDidScroll(_ scrollView: UIScrollView) {
         transformViewsInScrollView(scrollView)
         cubeDelegate?.cubeViewDidScroll?(self)
+    }
+
+    open func addNextView(_ view: UIView) {
+        if childViews.count == 2 {
+            stackView.removeArrangedSubview(childViews[1])
+            childViews.remove(at: 1)
+        }
+
+        view.layer.masksToBounds = true
+        stackView.addArrangedSubview(view)
+
+        scrollToViewAtIndex(1, animated: false)
+
+        addConstraint(NSLayoutConstraint(
+            item: view,
+            attribute: NSLayoutAttribute.width,
+            relatedBy: NSLayoutRelation.equal,
+            toItem: self,
+            attribute: NSLayoutAttribute.width,
+            multiplier: 1,
+            constant: 0)
+        )
+
+        childViews.append(view)
     }
 
     // MARK: Private methods
